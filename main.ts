@@ -13,11 +13,19 @@ import { join } from "node:path";
 const WORD = "Obviously";
 
 // --- Validate: exactly one word, 1-99 characters, no whitespace at all. ---
+// Mirrors the gate: entry.txt must be UTF-8 text of 1-99 characters and
+// not only whitespace, and the bounty requires a single word.
 if (WORD.length < 1 || WORD.length > 99) {
   throw new Error(`word must be 1-99 characters, got ${WORD.length}`);
 }
-if (/\s/.test(WORD)) {
+if (!/^\S+$/.test(WORD)) {
   throw new Error("word must be a single word with no whitespace");
+}
+if (WORD.trim() !== WORD) {
+  throw new Error("word must not have leading or trailing whitespace");
+}
+if (!/[A-Za-z]/.test(WORD)) {
+  throw new Error("word must contain at least one letter");
 }
 if (/[\u0000-\u001f\u007f]/.test(WORD)) {
   throw new Error("word must not contain control characters");
